@@ -134,7 +134,8 @@ func _to_string() -> String:
 	var p99 = get_p99()
 	var sps = get_samples_per_second()
 
-	return "#%5d [%s-%s ~%s] p:[%s %s %s %s] (%.1f/s) <- %s" % [
+	return "%s ->\n  #%5d [%s-%s ~%s] p:[%s %s %s %s] (%.1f/s)" % [
+		name,
 		count,
 		format_duration(min_usec),
 		format_duration(max_usec),
@@ -144,7 +145,6 @@ func _to_string() -> String:
 		format_duration(p95),
 		format_duration(p99),
 		sps,
-		name
 	]
 
 static func format_duration(usec: int) -> String:
