@@ -1,6 +1,8 @@
-class_name PerformanceAreaStats
+class_name PerformanceMonitor_DeferredCallStats
 
-var name: String
+var classname: String
+var method: StringName
+var type: int  # 0=TYPE_CALL, 1=TYPE_NOTIFICATION, 2=TYPE_SET
 
 # Circular buffer for percentile calculation
 var _samples: Array[int] = []
@@ -18,12 +20,14 @@ var max_usec: int = 0
 var total_usec: int = 0
 var count: int = 0
 
-# Track sample timing for samples-per-second calculation
+# Track sample timing for calls-per-second calculation
 var _first_sample_time_usec: int = 0
 var _last_sample_time_usec: int = 0
 
-func _init(p_name: String) -> void:
-	self.name = p_name
+func _init(p_class_name: String, p_method: StringName, p_type: int) -> void:
+	self.classname = p_class_name
+	self.method = p_method
+	self.type = p_type
 	_samples.resize(MAX_SAMPLES)
 
 func add_sample(duration_usec: int, sample_time_usec: int = 0) -> void:
@@ -78,7 +82,7 @@ func get_p95() -> int:
 func get_p99() -> int:
 	return get_percentile(0.99)
 
-func get_samples_per_second() -> float:
+func get_calls_per_second() -> float:
 	if count == 0:
 		return 0.0
 	if count == 1:
@@ -123,40 +127,37 @@ func clear() -> void:
 	_first_sample_time_usec = 0
 	_last_sample_time_usec = 0
 
+func get_type_string() -> String:
+	match type:
+		0: return "call"
+		1: return "notif"
+		2: return "set"
+		_: return "unknown"
+
+func get_key() -> String:
+	return "%s::%s [%s]" % [classname, method, get_type_string()]
+
 func _to_string() -> String:
 	if count == 0:
-		return "no samples <- %s" % name
+		return "no calls <- %s" % get_key()
 
 	var avg = get_avg_usec()
 	var p50 = get_p50()
 	var p90 = get_p90()
 	var p95 = get_p95()
 	var p99 = get_p99()
-	var sps = get_samples_per_second()
+	var cps = get_calls_per_second()
 
-	return "%s ->\n  #%5d [%s-%s ~%s] p:[%s %s %s %s] (%.1f/s)" % [
-		name,
+	return "%s ->\n  #%5d [%s-%s ~%s] p:[%s %s %s %s] (%.1f/s) total=%s" % [
+		get_key(),
 		count,
-		format_duration(min_usec),
-		format_duration(max_usec),
-		format_duration_float(avg),
-		format_duration(p50),
-		format_duration(p90),
-		format_duration(p95),
-		format_duration(p99),
-		sps,
+		PerformanceMonitor_AreaStats.format_duration(min_usec),
+		PerformanceMonitor_AreaStats.format_duration(max_usec),
+		PerformanceMonitor_AreaStats.format_duration_float(avg),
+		PerformanceMonitor_AreaStats.format_duration(p50),
+		PerformanceMonitor_AreaStats.format_duration(p90),
+		PerformanceMonitor_AreaStats.format_duration(p95),
+		PerformanceMonitor_AreaStats.format_duration(p99),
+		cps,
+		PerformanceMonitor_AreaStats.format_duration(total_usec),
 	]
-
-static func format_duration(usec: int) -> String:
-	if usec < 1000:
-		return "%dµs" % usec
-	else:
-		var ms = float(usec) / 1000.0
-		return "%.2fms" % ms
-
-static func format_duration_float(usec: float) -> String:
-	if usec < 1000.0:
-		return "%.1fµs" % usec
-	else:
-		var ms = usec / 1000.0
-		return "%.2fms" % ms

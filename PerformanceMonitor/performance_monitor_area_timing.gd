@@ -1,4 +1,4 @@
-class_name FrameAreaTiming
+class_name PerformanceMonitor_AreaTiming
 
 var name: String
 var node: Node  # Reference to the node (may be null for manual PerformanceArea)
@@ -28,5 +28,5 @@ func _to_string() -> String:
 		name,
 		start_usec,
 		end_usec,
-		PerformanceAreaStats.format_duration(duration_usec)
+		PerformanceMonitor_AreaStats.format_duration(duration_usec)
 	]
