@@ -5,6 +5,23 @@ var start_usec: int
 var end_usec: int
 var total_duration_usec: int
 var areas: Array[FrameAreaTiming] = []
+var deferred_calls: Array[DeferredCallTiming] = []
+
+# Frame timing breakdown (from _engine_track_frame_times)
+var game_logic_usec: int = 0
+var draw_usec: int = 0
+var post_render_usec: int = 0
+
+# Detailed game logic breakdown
+var navigation_sync_usec: int = 0
+var physics_steps_usec: int = 0
+var input_flush_usec: int = 0
+var process_usec: int = 0
+var message_queue_flush_usec: int = 0
+
+# Additional frame components
+var script_frame_usec: int = 0
+var audio_update_usec: int = 0
 
 func _init(p_frame_number: int, p_start_usec: int) -> void:
 	self.frame_number = p_frame_number
