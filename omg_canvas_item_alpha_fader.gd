@@ -25,7 +25,8 @@ func _ready() -> void:
 	if _control_target:
 		_initial_mouse_filter = _control_target.mouse_filter
 	# initialize alpha and visibility
-	_target.modulate.a = _alpha
+	# _target.modulate.a = _alpha
+	self._alpha = _target.modulate.a
 	set_process(true)
 
 func _process(delta: float) -> void:
