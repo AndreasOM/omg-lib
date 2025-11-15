@@ -59,9 +59,9 @@ func fade_in(duration: float) -> void:
 		# Sets all children to STOP without remembering their initial values.
 		# This needs more consideration - should we track initial values per child?
 		# Problem: Dynamic children added after _ready() won't be tracked.
-		for c in _control_target.get_children():
-			if c is Control:
-				c.mouse_filter = Control.MOUSE_FILTER_STOP
+#		for c in _control_target.get_children():
+#			if c is Control:
+#				c.mouse_filter = Control.MOUSE_FILTER_STOP
 	if duration > 0.0:
 		_alpha_speed = (1.0 - _alpha) / duration
 		emit_signal("fading_in", duration)
@@ -79,9 +79,9 @@ func fade_out(duration: float) -> void:
 	if _control_target:
 		_control_target.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		# :TODO: Match old FadeableContainer behavior - see fade_in()
-		for c in _control_target.get_children():
-			if c is Control:
-				c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+#		for c in _control_target.get_children():
+#			if c is Control:
+#				c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if duration > 0.0:
 		_alpha_speed = -_alpha / duration
 		emit_signal("fading_out", duration)
