@@ -63,6 +63,9 @@ func erase( value: Variant ) -> void:
 		return
 	self._data.remove_at( idx )
 
+func remove_at( idx: int ) -> void:
+	self._data.remove_at( idx )
+
 func get_entry( idx: int ) -> Variant:
 	return _data.get( idx )
 	
