@@ -49,6 +49,9 @@ func close_dialog( id: int, duration: float ) -> void:
 		
 	d.close( duration )
 
+func find_dialog( id: int ) -> Dialog:
+	return self._dialogs.get( id, null )
+
 func _on_dialog_opened( dialog: Dialog ) -> void:
 	pass
 
